@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Board</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+	body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #333;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+    gap: 2px;
+}
+
+.square {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+.dark {
+    background-color: #34495e;
+}
+
+.light {
+    background-color: #ecf0f1;
+}
+
+.piece {
+    cursor: pointer;
+    font-size: 28px;
+}
+
+.player1 {
+    color: #ff4c4c; /* Red for Player 1 */
+}
+
+.player2 {
+    color: #4c6cff; /* Blue for Player 2 */
+}
+
+	</style>
+</head>
+<body>
+    <div class="game-board" id="gameBoard">
+        <!-- The chessboard will be generated here by JavaScript -->
+    </div>
+    <script>
+	// Constants
+const BOARD_SIZE = 8;
+const initialBoardSetup = [
+    ['<i class="fas fa-rocket"></i>', '<i class="fas fa-helicopter"></i>', '<i class="fas fa-crosshairs"></i>', '<i class="fas fa-fighter-jet"></i>', '<i class="fas fa-crown"></i>', '<i class="fas fa-crosshairs"></i>', '<i class="fas fa-helicopter"></i>', '<i class="fas fa-rocket"></i>'],
+    ['<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>'],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    [null, null, null, null, null, null, null, null],
+    ['<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>', '<i class="fas fa-plane"></i>'],
+    ['<i class="fas fa-rocket"></i>', '<i class="fas fa-helicopter"></i>', '<i class="fas fa-crosshairs"></i>', '<i class="fas fa-fighter-jet"></i>', '<i class="fas fa-crown"></i>', '<i class="fas fa-crosshairs"></i>', '<i class="fas fa-helicopter"></i>', '<i class="fas fa-rocket"></i>'],
+];
+
+// Elements
+const gameBoard = document.getElementById('gameBoard');
+
+// Create the board
+function createBoard() {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+        for (let col = 0; col < BOARD_SIZE; col++) {
+            const square = document.createElement('div');
+            square.classList.add('square');
+            square.classList.add((row + col) % 2 === 0 ? 'light' : 'dark');
+            square.dataset.row = row;
+            square.dataset.col = col;
+            square.addEventListener('click', handleSquareClick);
+
+            const piece = initialBoardSetup[row][col];
+            if (piece) {
+                const pieceElement = document.createElement('span');
+                pieceElement.classList.add('piece');
+                // Apply the appropriate class based on the row (Player 1 or Player 2)
+                if (row < 2) {
+                    pieceElement.classList.add('player1');
+                } else if (row > 5) {
+                    pieceElement.classList.add('player2');
+                }
+                pieceElement.innerHTML = piece;
+                square.appendChild(pieceElement);
+            }
+
+            gameBoard.appendChild(square);
+        }
+    }
+}
+
+let selectedPiece = null;
+let selectedSquare = null;
+
+function handleSquareClick(event) {
+    const targetSquare = event.currentTarget;
+
+    if (selectedPiece) {
+        // If a piece is selected, move it to the new square
+        if (targetSquare !== selectedSquare) {
+            // Remove the existing piece in the target square, if any
+            if (targetSquare.firstChild) {
+                targetSquare.removeChild(targetSquare.firstChild);
+            }
+            // Move the piece to the new square
+            targetSquare.appendChild(selectedPiece);
+
+            // Deselect the piece
+            selectedPiece = null;
+            selectedSquare = null;
+        }
+    } else if (targetSquare.firstChild) {
+        // Select the piece if no piece is currently selected
+        selectedPiece = targetSquare.firstChild;
+        selectedSquare = targetSquare;
+    }
+}
+
+// Initialize the game
+createBoard();
+
+	
+	</script>
+</body>
+</html>
